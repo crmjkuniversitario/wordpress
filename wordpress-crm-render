@@ -1,0 +1,84 @@
+# Estrutura completa do projeto WordPress para Render via GitHub
+
+## 1️⃣ `Dockerfile`
+```dockerfile
+FROM wordpress:php8.2-apache
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+EXPOSE 80
+```
+
+## 2️⃣ `docker-compose.yml`
+```yaml
+version: '3.8'
+services:
+  wordpress:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: example
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./wp-content:/var/www/html/wp-content
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+```
+
+## 3️⃣ `wp-config.php`
+```php
+<?php
+ define('DB_NAME', getenv('DB_NAME'));
+ define('DB_USER', getenv('DB_USER'));
+ define('DB_PASSWORD', getenv('DB_PASSWORD'));
+ define('DB_HOST', getenv('DB_HOST'));
+ define('DB_CHARSET', 'utf8');
+ define('DB_COLLATE', '');
+ $table_prefix = 'wp_';
+ define('WP_DEBUG', false);
+ if (!defined('ABSPATH')) {
+     define('ABSPATH', __DIR__ . '/');
+ }
+ require_once ABSPATH . 'wp-settings.php';
+```
+
+## 4️⃣ `README.md`
+```markdown
+# WordPress CRM Deploy no Render
+
+## Como rodar localmente
+1. Instale Docker.
+2. Rode:
+```bash
+docker-compose up -d
+```
+3. Acesse: http://localhost:8080
+
+## Deploy no Render
+1. Suba este projeto no GitHub.
+2. Crie um serviço no Render com Docker.
+3. Configure variáveis de ambiente:
+- DB_HOST
+- DB_USER
+- DB_PASSWORD
+- DB_NAME
+4. Crie um banco de dados MySQL no Render ou Railway.
+5. Aponte o domínio se desejar.
+
+## Estrutura de pastas
+- wp-content/plugins
+- wp-content/themes
+- wp-content/uploads
+```
+
+✅ **Pronto para você baixar e subir no GitHub imediatamente para seu CRM WordPress rodar no Render gratuitamente.**
